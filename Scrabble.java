@@ -3,22 +3,6 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
-
-/*determine to best Scrabble word from a LIST OF LETTERS
- *
- * 
- * 
- * For each of the 7 letters in your hand, only look at words from API
- * that start with two of those letters. 
- * 
- * 
- *  Compare each of the 7 letters i your hand and scan through list of 
- * words. If list contains letters that are not in your hand, remove
- * those words from the list.
- * 
- * 
- * 
- */
 public class Scrabble 
 {
 	private char letter;
@@ -27,13 +11,10 @@ public class Scrabble
 	private String listWord;
 	private static char [] hand;
 	
-	public Scrabble()
+	public Scrabble(ArrayList<String> theList, char [] theHand)
 	{
-		letter = this.letter;
-		pointValue = 0;
-		list = null;
-		listWord = "";
-		hand = null;
+		list = theList;
+		hand = theHand;
 	}
 	
 	public int scoreWord(String word)
@@ -74,7 +55,7 @@ public class Scrabble
 		return sumPoints;
 	}
 	
-	public void setHand(int numLetters)
+	public static void setHand(int numLetters)
 	{
 		hand = new char[numLetters];
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -85,142 +66,95 @@ public class Scrabble
 		}
 	}
 	
-	public char[] getHand()
+	public static char[] getHand()
 	{
 		return hand;
 	}
 	
-	public void refineList(ArrayList<String> list, char [] hand)
+	public void refineList(ArrayList<String> inputList)
 	{
-		
-		
-		listWord = "";
 		ArrayList<String> newList = new ArrayList<String>();
-		for(int i = 0; i < list.size(); i++)				
+		listWord = "";
+		int c = 0;
+		int k = 0;
+		
+		while(inputList.size() > 10)
 		{
-			for(int j = 0; j < hand.length; j++)
+			for(int i = 0; i < inputList.size(); i++)
 			{
-				listWord = list.get(i);
-				if(listWord.charAt(0) == hand[j])
-					newList.add(listWord);
+				listWord = inputList.get(i);
+				
+				for(int j = 0; j < hand.length; j++)
+				{
+					if(listWord.length() > hand.length)
+						inputList.remove(listWord);
+	
+					if(c + 1 <= listWord.length())
+					{
+						if(listWord.charAt(c) == hand[j] && !newList.contains(listWord))
+							newList.add(listWord);
+					}
+				}
+			
+//				while(k + 1 < listWord.length())
+//				{
+//					for(int n = 0; n < hand.length; n++)
+//					{				
+//						if(newList.contains(listWord) && listWord.charAt(k) != hand[n])
+//						{
+//							listWord.toCharArray();
+//							if(listWord.)
+//								hand.toString();
+//						}					
+//						
+//					}
+//					k++;
+//				}
+				
+
+				
 			}
-		}	
-		list = newList;											//want to refine words until there are only two left in list
-																//keep comparing to hand until only 2 are left
+			ArrayList<String> temp = newList;
+			newList = inputList;
+			inputList = temp;
+			newList.clear();
+			c++;			
+			
+		}
+		
+		System.out.println(inputList);
+		 
 	}
 	
 	public static void main(String [] args) throws IOException
 	{
-		Scrabble scr = new Scrabble();
+		
 		Scanner s = new Scanner(System.in);
 		System.out.println("How many random letters would you like in your hand?");
 		int numLetters = s.nextInt();
-		scr.setHand(numLetters);
-		System.out.println("Your letters are: " + Arrays.toString(scr.getHand()));
-		s.close();
-		
+		setHand(numLetters);
+		getHand();
+		System.out.println("Your letters are: " + Arrays.toString(hand));
+		s.close();		
+	
 		URL url = new URL("http://www.ign.com/code-foo/2016/words.txt");
 		InputStream input = url.openStream();
-		Scanner scan = new Scanner(input);
 		
-//		char [] hand = new char [7];//some words in list are longer than 7 letters
-		
-//		Random rand = new Random();										
-//		String alphabet = "abcdefghijklmnopqrstuvwxyz";
-//		int length = alphabet.length();								//gives 7 random letters to hand
-//		for(int i = 0; i < hand.length; i++)
-//		{
-//			hand [i] = alphabet.charAt(rand.nextInt(length));			
-//		}
-		
+		Scanner scan = new Scanner(input);		
 		ArrayList<String> list = new ArrayList<String>();		
 		String listWord = "";
 		while (scan.hasNext())
 		{
 			listWord = scan.nextLine();
-			list.add(listWord);						//prints list of words from URL in an ArrayList			
+			list.add(listWord);								
 		}
+		
+		Scrabble scr = new Scrabble(list, hand);		
+		scan.close();
 		System.out.println(list);
 		
-		ArrayList <String> refinedList = new ArrayList<String>();
-		ArrayList <String> refinedList2 = new ArrayList<String>();
-		ArrayList <String> refinedList3 = new ArrayList<String>();
-		ArrayList <String> refinedList4 = new ArrayList<String>();
-
-	
-		listWord = "";
-		Queue<Character> q = new LinkedList<Character>();
-//		ArrayList<String> newList = new ArrayList<String>();
-		for(int i = 0; i < list.size(); i++)				//need to find a way to change only list,
-																	//and not have to use newList
-		{
-			for(int j = 0; j < hand.length; j++)
-			{
-				listWord = list.get(i);
-				if(listWord.charAt(0) == hand[j] && !refinedList.contains(listWord))
-					refinedList.add(listWord);
-			}
-		}	
-											//refines words until there are only two left in list					
-		for(int i = 0; i < refinedList.size(); i++)
-		{
-			for(int j = 0; j < hand.length; j++)
-			{
-				listWord = refinedList.get(i);
-				if(listWord.charAt(1) == hand[j] && !refinedList2.contains(listWord))
-					refinedList2.add(listWord);
-			}
-		}
+		scr.refineList(list);
 		
-		for(int i = 0; i < refinedList2.size(); i++)
-		{
-			for(int j = 0; j < hand.length; j++)
-			{
-				listWord = refinedList2.get(i);
-				if(listWord.charAt(2) == hand[j] && !refinedList3.contains(listWord))
-					refinedList3.add(listWord);
-			}
-		}
-		
-//		for(int i = 0; i < refinedList3.size(); i++)
-//		{
-//			for(int j = 0; j < hand.length; j++)
-//			{
-//				listWord = refinedList3.get(i);
-//				if(listWord.charAt(3) == hand[j])
-//					refinedList4.add(listWord);
-//			}
-//		}
-		
-		System.out.println(refinedList);	
-		System.out.println(refinedList2);	
-		System.out.println(refinedList3);
-		System.out.println(q);
-//		System.out.println(refinedList4);
-//			
-			
-
-	//	System.out.println(list);
-		
-//		ArrayList<String> refinedList = null;		
-//		char handLetter;
-//		for(int i = 0; i < hand.length; i++)
-//		{
-//			handLetter = hand [i];
-//			if(handLetter == listWord.charAt(0))
-//				refinedList.add(listWord);
-//		}
-//		System.out.println(refinedList);
-		
-
-
-//		scan.close();
-//		scr.getHand();
-//		System.out.println("Your letters are: " + Arrays.toString(hand));
-//		scr.refineList(list, hand);
-//		System.out.println(list);
-//		
-
 	}
 	
 }
