@@ -3,6 +3,7 @@ import java.net.*;
 import java.util.*;
 import java.io.*;
 
+
 /*determine to best Scrabble word from a LIST OF LETTERS
  *
  * 
@@ -143,33 +144,60 @@ public class Scrabble
 		
 		ArrayList <String> refinedList = new ArrayList<String>();
 		ArrayList <String> refinedList2 = new ArrayList<String>();
+		ArrayList <String> refinedList3 = new ArrayList<String>();
+		ArrayList <String> refinedList4 = new ArrayList<String>();
+
 	
 		listWord = "";
-		ArrayList<String> newList = new ArrayList<String>();
+		Queue<Character> q = new LinkedList<Character>();
+//		ArrayList<String> newList = new ArrayList<String>();
 		for(int i = 0; i < list.size(); i++)				//need to find a way to change only list,
 																	//and not have to use newList
 		{
 			for(int j = 0; j < hand.length; j++)
 			{
 				listWord = list.get(i);
-				if(listWord.charAt(0) == hand[j])
+				if(listWord.charAt(0) == hand[j] && !refinedList.contains(listWord))
 					refinedList.add(listWord);
 			}
 		}	
-											//refines words until there are only two left in list
-							
+											//refines words until there are only two left in list					
 		for(int i = 0; i < refinedList.size(); i++)
 		{
 			for(int j = 0; j < hand.length; j++)
 			{
 				listWord = refinedList.get(i);
-				if(listWord.charAt(1) == hand[j])
+				if(listWord.charAt(1) == hand[j] && !refinedList2.contains(listWord))
 					refinedList2.add(listWord);
 			}
 		}
+		
+		for(int i = 0; i < refinedList2.size(); i++)
+		{
+			for(int j = 0; j < hand.length; j++)
+			{
+				listWord = refinedList2.get(i);
+				if(listWord.charAt(2) == hand[j] && !refinedList3.contains(listWord))
+					refinedList3.add(listWord);
+			}
+		}
+		
+//		for(int i = 0; i < refinedList3.size(); i++)
+//		{
+//			for(int j = 0; j < hand.length; j++)
+//			{
+//				listWord = refinedList3.get(i);
+//				if(listWord.charAt(3) == hand[j])
+//					refinedList4.add(listWord);
+//			}
+//		}
+		
 		System.out.println(refinedList);	
 		System.out.println(refinedList2);	
-			
+		System.out.println(refinedList3);
+		System.out.println(q);
+//		System.out.println(refinedList4);
+//			
 			
 
 	//	System.out.println(list);
